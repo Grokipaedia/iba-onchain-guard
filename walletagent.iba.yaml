@@ -1,0 +1,56 @@
+# wallet-agent.iba.yaml
+# IBA Intent Bound Authorization — Wallet Agent Configuration
+# AgentialOnChain.com · Patent GB2603013.0 (Pending) · intentbound.com
+
+intent:
+  description: >
+    Authorized wallet operations within declared limits.
+    Transfer to declared recipients only. Approve declared contracts.
+    Sign messages for declared dApps. No private key export.
+    No transfers above session cap. No undeclared recipients.
+
+principal:
+  wallet_reference: "WALLET-AGENT-XXXX"
+  human_authorization: "HUMAN-AUTH-2026-04-20"
+  chain: "ethereum"
+  account_type: "smart_account_erc4337"
+
+scope:
+  - transfer_declared_recipient
+  - approve_declared_contract
+  - sign_declared_message
+  - sign_declared_transaction
+  - check_balance
+  - read_transaction_history
+  - interact_declared_dapp
+
+denied:
+  - transfer_undeclared_recipient
+  - approve_unlimited_undeclared
+  - export_private_key
+  - export_seed_phrase
+  - transfer_above_limit
+  - bulk_transfer_undeclared
+  - modify_account_permissions_undeclared
+
+default_posture: DENY_ALL
+
+kill_threshold: >
+  export_private_key |
+  export_seed_phrase |
+  drain_wallet |
+  unauthorized_admin_action |
+  credential_exfiltration |
+  account_takeover
+
+financial_limits:
+  max_single_tx_usd: 5000
+  max_session_usd: 50000
+
+temporal_scope:
+  hard_expiry: "2026-12-31"
+
+audit:
+  chain: witnessbound
+  log_every_action: true
+  immutable: true
