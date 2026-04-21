@@ -1,0 +1,56 @@
+# dao-voting.iba.yaml
+# IBA Intent Bound Authorization — DAO Voting Agent Configuration
+# AgentialOnChain.com · Patent GB2603013.0 (Pending) · intentbound.com
+
+intent:
+  description: >
+    Authorized DAO governance participation within declared scope.
+    Vote on declared proposal types only. Delegate to declared addresses.
+    No treasury execution without explicit re-cert.
+    No undeclared governance actions.
+
+principal:
+  wallet_reference: "WALLET-DAO-XXXX"
+  human_authorization: "HUMAN-AUTH-2026-04-20"
+  chain: "ethereum"
+  declared_daos:
+    - uniswap_governance
+    - aave_governance
+    - compound_governance
+    - arbitrum_dao
+
+scope:
+  - vote_proposal_declared
+  - delegate_votes_declared
+  - comment_proposal
+  - read_governance_state
+  - check_voting_power
+  - queue_proposal_declared
+
+denied:
+  - execute_proposal_undeclared
+  - transfer_treasury_unauthorized
+  - modify_governance_parameters_undeclared
+  - vote_undeclared_dao
+  - delegate_undeclared_address
+
+default_posture: DENY_ALL
+
+kill_threshold: >
+  transfer_treasury_unauthorized |
+  modify_governance_attack |
+  governance_takeover |
+  unauthorized_execution |
+  malicious_proposal_execution
+
+temporal_scope:
+  hard_expiry: "2026-12-31"
+
+capability_governance:
+  treasury_execution_requires: "explicit_human_re_cert"
+  silent_expansion: FORBIDDEN
+
+audit:
+  chain: witnessbound
+  log_every_vote: true
+  immutable: true
