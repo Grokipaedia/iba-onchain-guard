@@ -1,0 +1,52 @@
+# nft-agent.iba.yaml
+# IBA Intent Bound Authorization — NFT Agent Configuration
+# AgentialOnChain.com · Patent GB2603013.0 (Pending) · intentbound.com
+
+intent:
+  description: >
+    Authorized NFT operations within declared collections and marketplaces.
+    Mint from declared collections only. List on declared marketplaces.
+    Transfer to declared recipients. No bulk operations without re-cert.
+
+principal:
+  wallet_reference: "WALLET-NFT-XXXX"
+  human_authorization: "HUMAN-AUTH-2026-04-20"
+  chain: "ethereum"
+  declared_collections: ["declared-collection-address"]
+  declared_marketplaces: ["opensea", "blur", "foundation"]
+
+scope:
+  - mint_nft_declared_collection
+  - list_nft_declared_marketplace
+  - transfer_nft_declared_recipient
+  - delist_nft
+  - check_nft_balance
+  - read_collection_metadata
+
+denied:
+  - bulk_mint_undeclared
+  - transfer_nft_undeclared_recipient
+  - list_below_floor_undeclared
+  - approve_all_undeclared_operator
+  - drain_nft_wallet
+
+default_posture: DENY_ALL
+
+kill_threshold: >
+  drain_nft_wallet |
+  approve_all_malicious_operator |
+  nft_theft_detected |
+  unauthorized_bulk_transfer |
+  phishing_contract_interaction
+
+financial_limits:
+  max_mint_cost_usd: 500
+  max_single_purchase_usd: 5000
+
+temporal_scope:
+  hard_expiry: "2026-12-31"
+
+audit:
+  chain: witnessbound
+  log_every_action: true
+  immutable: true
