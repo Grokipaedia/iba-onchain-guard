@@ -1,0 +1,82 @@
+# defi-trading.iba.yaml
+# IBA Intent Bound Authorization — DeFi Trading Agent Configuration
+# Patent GB2603013.0 (Pending) · UK IPO · Filed February 5, 2026
+# WIPO DAS Confirmed April 15, 2026 · Access Code C9A6
+# AgentialOnChain.com · intentbound.com
+#
+# Governs autonomous AI trading agents on DeFi protocols.
+# Every swap, liquidity provision, yield harvest, and rebalance
+# requires a signed human intent certificate before execution.
+
+intent:
+  description: >
+    Authorized DeFi trading within declared protocols and limits.
+    Swap declared token pairs only. Add/remove liquidity in declared pools.
+    Harvest yield from declared protocols. Rebalance declared portfolio.
+    No emergency withdrawals without re-cert. No undeclared protocols.
+    Maximum single transaction and session spending limits enforced.
+
+principal:
+  wallet_reference: "WALLET-DEFI-XXXX"
+  human_authorization: "HUMAN-AUTH-2026-04-20"
+  chain: "ethereum"
+  account_type: "eoa_with_eip7702"
+
+scope:
+  - swap_token
+  - add_liquidity
+  - remove_liquidity
+  - harvest_yield
+  - rebalance_portfolio
+  - stake_token
+  - unstake_token
+  - approve_token
+  - read_price
+  - check_balance
+  - claim_rewards
+
+denied:
+  - withdraw_all_emergency_undeclared
+  - interact_undeclared_protocol
+  - transfer_undeclared_recipient
+  - flash_loan_undeclared
+  - leverage_undeclared
+  - drain_wallet
+  - bulk_transfer_undeclared
+
+default_posture: DENY_ALL
+
+kill_threshold: >
+  drain_wallet |
+  private_key_export |
+  credential_exfiltration |
+  unauthorized_admin |
+  rug_pull_detected |
+  sandwich_attack |
+  mev_exploit_unauthorized
+
+financial_limits:
+  max_single_tx_usd: 10000
+  max_session_usd: 50000
+  slippage_tolerance_pct: 1.0
+  declared_protocols:
+    - uniswap_v3
+    - aave_v3
+    - compound_v3
+    - curve
+    - lido
+
+temporal_scope:
+  hard_expiry: "2026-12-31"
+  session_timeout_hours: 24
+
+audit:
+  chain: witnessbound
+  log_every_action: true
+  log_tx_values: true
+  immutable: true
+
+regulatory:
+  eu_ai_act: compliant
+  fatf_travel_rule: compliant
+  declared_jurisdiction: "EU"
