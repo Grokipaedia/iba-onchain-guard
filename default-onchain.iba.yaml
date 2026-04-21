@@ -1,0 +1,66 @@
+# default-onchain.iba.yaml
+# IBA Intent Bound Authorization — Default Onchain Configuration
+# AgentialOnChain.com · Patent GB2603013.0 (Pending) · intentbound.com
+#
+# Platform-agnostic base cert for any blockchain agent.
+# Copy and extend for specific chains, protocols, or use cases.
+
+intent:
+  description: >
+    Authorized onchain operations within declared scope and limits.
+    Declared protocols only. Declared recipients only.
+    Financial limits enforced. No private key operations.
+    No undeclared contract interactions. DENY_ALL default.
+
+principal:
+  wallet_reference: "WALLET-ONCHAIN-XXXX"
+  human_authorization: "HUMAN-AUTH-2026-04-20"
+  chain: "ethereum"
+  account_type: "eoa"
+
+scope:
+  - onchain_action_declared
+  - read_contract_declared
+  - sign_declared_transaction
+  - check_balance
+  - read_transaction_history
+  - interact_declared_protocol
+
+denied:
+  - undeclared_protocol_interaction
+  - transfer_undeclared_recipient
+  - export_private_key
+  - export_seed_phrase
+  - drain_wallet
+  - bulk_transfer_undeclared
+  - unauthorized_admin
+
+default_posture: DENY_ALL
+
+kill_threshold: >
+  drain_wallet |
+  private_key_export |
+  credential_exfiltration |
+  unauthorized_admin |
+  account_takeover |
+  capability_override
+
+financial_limits:
+  max_single_tx_usd: 1000
+  max_session_usd: 10000
+
+temporal_scope:
+  hard_expiry: "2026-12-31"
+
+capability_governance:
+  expansion_requires: "new_signed_human_cert"
+  silent_expansion: FORBIDDEN
+
+audit:
+  chain: witnessbound
+  log_every_action: true
+  immutable: true
+
+regulatory:
+  eu_ai_act: compliant
+  fatf_travel_rule: compliant
