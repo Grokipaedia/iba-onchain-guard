@@ -1,0 +1,68 @@
+# payment-agent.iba.yaml
+# IBA Intent Bound Authorization — Payment Agent Configuration
+# AgentialOnChain.com · Patent GB2603013.0 (Pending) · intentbound.com
+#
+# Governs autonomous payment agents on x402, stablecoin rails,
+# and onchain payment protocols. Every payment requires a signed
+# human intent certificate before execution.
+
+intent:
+  description: >
+    Authorized payment operations on declared payment rails.
+    x402 payments to declared merchants only.
+    Stablecoin transfers to declared payees only.
+    Recurring payments on declared subscriptions only.
+    No bulk payments without re-cert.
+    No undeclared merchants or recipients.
+
+principal:
+  wallet_reference: "WALLET-PAY-XXXX"
+  human_authorization: "HUMAN-AUTH-2026-04-20"
+  chain: "base"
+  account_type: "smart_account_erc4337"
+  payment_rails: ["x402", "usdc", "usdt", "eurc"]
+
+scope:
+  - x402_payment_declared_merchant
+  - stablecoin_transfer_declared_payee
+  - recurring_payment_declared_subscription
+  - check_payment_status
+  - read_payment_history
+  - refund_declared_transaction
+
+denied:
+  - payment_undeclared_merchant
+  - bulk_payment_undeclared
+  - payment_above_limit
+  - transfer_non_stablecoin_undeclared
+  - modify_subscription_undeclared
+  - drain_payment_wallet
+
+default_posture: DENY_ALL
+
+kill_threshold: >
+  drain_wallet |
+  bulk_payment_unauthorized |
+  credential_exfiltration |
+  payment_to_sanctioned_address |
+  money_laundering_pattern |
+  unauthorized_recurring
+
+financial_limits:
+  max_single_payment_usd: 1000
+  max_daily_usd: 10000
+  max_session_usd: 25000
+
+temporal_scope:
+  hard_expiry: "2026-12-31"
+
+audit:
+  chain: witnessbound
+  log_every_payment: true
+  log_merchant: true
+  immutable: true
+
+regulatory:
+  fatf_travel_rule: compliant
+  eu_funds_transfer_regulation: compliant
+  ofac_screening: required
